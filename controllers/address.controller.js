@@ -4,16 +4,17 @@
 /* eslint-disable no-throw-literal */
 /* eslint-disable no-empty */
 // Requiring database.
-const database = require('../addressbook.database');
+
+const AddressBook = require('../models/addressbook.model');
 
 // Get all addresses
 exports.getAddresses = async (req, res) => {
   try {
-    const availableAddresses = database;
-    if (!availableAddresses) { throw 'No addresses available'; }
-    res.json(availableAddresses);
+    const availableAddresses = await AddressBook.find();
+    if (!availableAddresses) { throw 'No Registered Address Available'; }
+    res.status(200).json(availableAddresses);
   } catch (error) {
-    if (error == 'No addresses available') {
+    if (error == 'No Registered Address Available') {
       return res.status(404).json({ error });
     }
     return res.status(400).json({ error });
@@ -23,24 +24,21 @@ exports.getAddresses = async (req, res) => {
 // Post an address
 exports.postAddresses = async (req, res) => {
   const {
-    id, firstname, lastname, phonenumber,
+    firstname, lastname, phonenumber,
   } = req.body;
   try {
-    database.forEach((address) => {
-      if (address.id == id) {
-        throw 'Duplicate ID Entered';
-      }
-    });
-    database.push({
-      id, firstname, lastname, phonenumber,
-    });
-    res.status(201).json({
-      id, firstname, lastname, phonenumber,
-    });
+    const duplicate = await AddressBook.findOne({ phonenumber });
+    if (duplicate) { throw 'Telephone number entered already belongs to a registered user'; }
+    const newUser = await AddressBook.create({ firstname, lastname, phonenumber });
+    if (!newUser) { throw 'Registration Failed'; }
+    res.status(201).json(newUser);
   } catch (error) {
-    if (error == 'Duplicate ID Entered') {
+    if (error == 'Telephone number entered already belongs to a registered user') {
       return res.status(400).json({ error });
+    } if (error == 'Registration Failed') {
+      return res.status(409).json({ error });
     }
     return res.status(400).json({ error });
   }
+  
 };
