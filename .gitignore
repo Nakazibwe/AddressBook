@@ -2,5 +2,6 @@
 .eslintrc.json
 node_modules/
 .vscode
+.env
 
 
