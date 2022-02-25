@@ -3,15 +3,12 @@ const chai = require('chai').expect;
 
 const request = require('request');
 
-const chaiHttp = require('chai-http');
-
 const sinon = require('sinon');
 
 const mocha = require('mocha');
 
 const app = require('../controllers/address.controller');
 
-// chai.use(chaiHttp);
 
 describe('with mock: getAddresses', () => {
   it('should getAllAddresses', async () => {
