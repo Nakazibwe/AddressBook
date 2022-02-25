@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha ./test/addressbook.test",
+    "test": "mocha ",
     "start": "nodemon app.js"
   },
   "keywords": [],
@@ -23,8 +23,10 @@
     "sinon": "^13.0.1"
   },
   "dependencies": {
+    "chai-http": "^4.3.0",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
-    "mongoose": "^6.2.3"
+    "mongoose": "^6.2.3",
+    "request": "^2.88.2"
   }
 }
