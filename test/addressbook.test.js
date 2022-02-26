@@ -1,21 +1,30 @@
+/* eslint-disable max-len */
+/* eslint-disable new-cap */
+/* eslint-disable prefer-destructuring */
 /* eslint-disable no-undef */
-const chai = require('chai').expect;
+/* eslint-disable import/extensions */
+/* eslint-disable import/order */
+// /* eslint-disable no-undef */
 
 const request = require('request');
 
 const sinon = require('sinon');
 
-const mocha = require('mocha');
+const { expect } = require('chai');
 
 const app = require('../controllers/address.controller');
 
+const AddressBook = require('../models/addressbook.model');
+
+const mocha = require('mocha');
+
+const { describe } = require('mocha');
+
 // Get Address tests.
 describe('with mock: getAddresses', () => {
-  it('should getAllAddresses', async () => {
+  it('Get All Addresses', async () => {
     const requestMock = sinon.mock(request);
-    requestMock.expects('get')
-      .withArgs('http://localhost:5000/addresses');
-
+    requestMock.expects('get');
     app.getAddresses().then((Addressbook) => {
       Addressbook.forEach((user) => {
         expect(user).to.have.property('firstname');
@@ -29,26 +38,18 @@ describe('with mock: getAddresses', () => {
   });
 });
 
-// Post Addresses tests.
-describe('with mock: postAddresses', () => {
-  it('should postAddresses', async () => {
-    const requestMock = sinon.mock(request);
-    const User = {
+// Address posting tests
+describe('Create User Address', () => {
+  it('Posting an address to the database', async () => {
+    const stubUser = {
       firstname: 'Pearl',
       lastname: 'Choko',
       phonenumber: 256779806798,
     };
-
-    requestMock.expects('post')
-      .withArgs('http://localhost:5000/addresses');
-
-    app.postAddresses().then((newUser) => {
-      newUser.expect(User).to.be.a('object');
-      newUser.expect(User).firstname.to.be.a('String');
-      newUser.expect(User).lastname.to.be.a('String');
-      newUser.expect(User).phonenumber.to.be.a('Number');
-      requestMock.verify();
-      requestMock.restore();
-    });
+    const stub = sinon.stub(AddressBook, 'create').returns(stubUser);
+    const newUser = new AddressBook.create(stubUser.firstname, stubUser.lastname, stubUser.phonenumber);
+    expect(newUser.firstname).to.equal(stubUser.firstname);
+    expect(newUser.lastname).to.equal(stubUser.lastname);
+    expect(newUser.phonenumber).to.equal(stubUser.phonenumber);
   });
 });
