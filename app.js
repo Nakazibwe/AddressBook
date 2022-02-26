@@ -20,7 +20,7 @@ mongoose.connect(process.env.DATABASE, {
 
 mongoose.connection
   .on('open', () => {
-    console.log('Mongoose connection currently open');
+    console.log('Mongoose connection successfull');
   })
   .on('error', (err) => {
     console.log(`Connection error: ${err.message}`);
